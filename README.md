@@ -1,14 +1,3 @@
-
-<p align="center">
-    <h3 align="center">Simple React Webpack Babel Starter Kit<br></h3>
-</p>
-
-[![CircleCI](https://circleci.com/gh/ReactJSResources/react-webpack-babel/tree/master.svg?style=svg)](https://circleci.com/gh/ReactJSResources/react-webpack-babel/tree/master)
-
-[![Dependency Status](https://img.shields.io/david/ReactJSResources/react-webpack-babel.svg)](https://david-dm.org/dylang/npm-check)
-
-Tired of complicated starters with 200MB of dependencies which are hard to understand and modify? This is for you!
-
 ### What were using
 
 * React 16
@@ -17,14 +6,14 @@ Tired of complicated starters with 200MB of dependencies which are hard to under
 * SASS
 * Babel Cli
 * Hot Module Reloading
-* Jest 21 
+* Jest 21
 * Enzyme 3 for testing
 
 ### Features
 
 * Simple src/index.jsx and src/index.css (local module css).
 * Webpack configuration for development (with hot reloading) and production (with minification).
-* CSS module loading, so you can include your css by ```import styles from './path/to.css';```.
+* CSS module loading, so you can include your css by `import styles from './path/to.css';`.
 * Both js(x) and css hot loaded during development.
 * [Webpack Dashboard Plugin](https://github.com/FormidableLabs/webpack-dashboard) on dev server.
 
@@ -58,6 +47,7 @@ npm run dev
 Open the web browser to `http://localhost:8888/`
 
 ### To test
+
 To run unit tests:
 
 ```
@@ -112,6 +102,7 @@ server {
 ```
 
 ### Eslint
+
 There is a `.eslint.yaml` config for eslint ready with React plugin.
 
 To run linting, run:
@@ -121,8 +112,6 @@ npm run lint
 ```
 
 ### Notes on importing css styles
+
 * styles having /src/ in their absolute path considered part of the application and exported as local css modules.
 * other styles considered global styles used by components and included in the css bundle directly.
-
-### Contribute
-Please contribute to the project if you know how to make it better, including this README :)
