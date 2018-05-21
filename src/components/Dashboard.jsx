@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import DeviceList from "./DeviceList";
+import DeviceCardList from "./DeviceCardList";
+import { Container, Row, Col } from "reactstrap";
 import dataLayer from "./../data";
 const connection = new dataLayer();
 
@@ -10,10 +11,15 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div>
-        <h1>TEST</h1>
-        <DeviceList />
-      </div>
+      <Container>
+        <Row>
+          <Col>
+            <h1>Canary Device Admin Dashboard</h1>
+            <hr />
+          </Col>
+        </Row>
+        <DeviceCardList />
+      </Container>
     );
   }
 }

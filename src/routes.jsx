@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import App from "./app";
 import Dashboard from "./components/Dashboard";
-import DeviceList from "./components/DeviceList";
+import DeviceCardList from "./components/DeviceCardList";
 import DeviceCard from "./components/DeviceCard";
 
 const Routes = () => (
@@ -10,7 +10,7 @@ const Routes = () => (
     <div>
       <Route exact path="/" component={App} />
       <Route path="/Dashboard" component={Dashboard} />
-      <Route path="/DeviceList" component={DeviceList} />
+      <Route path="/DeviceCardList" component={DeviceCardList} />
       <Route path="/DeviceCard" component={DeviceCard} />
     </div>
   </Router>

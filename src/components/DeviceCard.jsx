@@ -1,4 +1,14 @@
 import React, { Component } from "react";
+import {
+  Card,
+  CardText,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Col,
+  Button,
+  Row
+} from "reactstrap";
 
 class DeviceCard extends Component {
   constructor(props) {
@@ -6,10 +16,20 @@ class DeviceCard extends Component {
   }
 
   render() {
+    const { name, createdAt, updatedAt, type, value } = this.props.deviceData;
     return (
-      <div>
-        <h1>Device Card</h1>
-      </div>
+      <Card>
+        <CardBody>
+          <button type="button" className="close" aria-label="Delete">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <CardTitle>{name}</CardTitle>
+          <CardSubtitle>
+            <small>{updatedAt}</small>
+          </CardSubtitle>
+          <CardText />
+        </CardBody>
+      </Card>
     );
   }
 }

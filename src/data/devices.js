@@ -2,7 +2,7 @@
 
 module.exports = function(axios) {
   // Returns an array of device objects.
-  this.getDeviceList = () => {
+  this.getDeviceList = resp => {
     return axios.get("/devices");
   };
 

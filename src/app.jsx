@@ -1,6 +1,5 @@
 import React from "react";
 import Dashboard from "./components/Dashboard";
-
 import "normalize.css";
 
 import "styles/base/_main.sass"; // Global styles
