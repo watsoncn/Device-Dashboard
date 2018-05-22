@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import DeviceCard from "./DeviceCard";
 import { Row, Col } from "reactstrap";
+import dataLayer from "./../data";
+const connection = new dataLayer();
 
 class DeviceCardList extends Component {
   constructor(props) {
@@ -115,7 +117,7 @@ class DeviceCardList extends Component {
       ]
     };
 
-    // this.handleGetDeviceList();
+    this.handleGetDeviceList();
   }
 
   // Begin Handlers
@@ -154,7 +156,11 @@ class DeviceCardList extends Component {
     return (
       <div>
         {this.state.devices.map(device => (
-          <DeviceCard key={device.id} deviceData={device} />
+          <DeviceCard
+            className="deviceCard"
+            key={device.id}
+            deviceData={device}
+          />
         ))}
       </div>
     );
