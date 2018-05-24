@@ -10,11 +10,12 @@ class ReadingsGraph extends Component {
   }
 
   render() {
+    const { readings } = this.props;
     return (
       <div>
         <LineChart
-          xtitle="Avg Time"
-          ytitle="Avg Temperature"
+          xtitle="Time"
+          ytitle="Avg Readings"
           colors={["black"]}
           data={{
             "2017-01-01 00:00:00 -0800": 20,

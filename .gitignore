@@ -32,3 +32,9 @@ node_modules
 # Ignore build files
 public
 .idea
+
+# Ignore mock data files
+.mock.js
+
+# Ignore OS config files
+.DS_Store

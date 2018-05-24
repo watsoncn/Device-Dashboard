@@ -18,7 +18,7 @@ class DeviceCard extends Component {
   render() {
     const { name, createdAt, updatedAt, type, value } = this.props.deviceData;
     return (
-      <Card>
+      <Card id="deviceCard">
         <CardBody>
           <button type="button" className="close" aria-label="Delete">
             <span aria-hidden="true">&times;</span>
