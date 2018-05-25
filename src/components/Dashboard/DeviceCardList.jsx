@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DeviceCard from "./DeviceCard";
-import { Row, Col } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import dataLayer from "./../../data";
 const connection = new dataLayer();
 
@@ -15,7 +15,16 @@ class DeviceCardList extends Component {
     const { devices } = this.props;
     return (
       <div>
-        <h4 id="deviceList-header">Device List</h4>
+        <h4 id="deviceList-header">Device List
+          <button
+            type="button"
+            id="DeviceCard-add--button"
+            className="close"
+            aria-label="Add">
+            <span aria-hidden="true">&#5161;</span>
+          </button>
+        </h4>
+
       <div id="deviceCardList-scroll">
         {devices.map(device => (
           <DeviceCard

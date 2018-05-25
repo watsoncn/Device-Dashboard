@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DeviceCardList from "./DeviceCardList";
 import ReadingsGraph from "./ReadingsGraph";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import dataLayer from "./../../data";
 const connection = new dataLayer();
 import { devices, readings } from "./../../data/mock/.mock";
@@ -588,18 +588,8 @@ class Dashboard extends Component {
     return (
       <Container>
         <Row>
-          <Col sm="2" />
-          <Col sm="8" id="dashboard-header">
+          <Col sm="12" id="dashboard-header">
             <h1>Device Dashboard</h1>
-          </Col>
-          <Col sm="2">
-            <button
-              type="button"
-              id="DeviceCard-add--button"
-              className="close"
-              aria-label="Add">
-              <span aria-hidden="true">&#5161;</span>
-            </button>
           </Col>
         </Row>
         <Row id="Dashboard-body">
