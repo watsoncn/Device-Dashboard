@@ -14,14 +14,18 @@ class DeviceCardList extends Component {
   render() {
     const { devices } = this.props;
     return (
+      <div>
+        <h4 id="deviceList-header">Device List</h4>
       <div id="deviceCardList-scroll">
         {devices.map(device => (
           <DeviceCard
+            handleDeviceCardSelection={ this.props.handleDeviceCardSelection}
             className="deviceCard"
             key={device.id}
             deviceData={device}
           />
         ))}
+      </div>
       </div>
     );
   }

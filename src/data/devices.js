@@ -12,6 +12,12 @@ module.exports = function(axios) {
     return axios.get(`/devices/${deviceId}`);
   };
 
+  // Get all Readings for a single device
+  // This method returns a single device array of readings
+  this.getDeviceReadings = deviceId => {
+    return axios.get(`/devices/${deviceId}/readings`);
+  };
+
   // Create a new device
   // Pass a device object to populate device values
   // Returns a new device object containing an id property to use for future

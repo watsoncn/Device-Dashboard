@@ -1,4 +1,10 @@
 import React, { Component } from "react";
+import FontAwesomeIcon from "@fortawesome/react-fontawesome";
+import {
+  faThermometerEmpty,
+  faTint,
+  faLeaf
+} from "@fortawesome/fontawesome-free-solid";
 import {
   Card,
   CardText,
@@ -13,10 +19,19 @@ import {
 class DeviceCard extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {};
   }
 
   render() {
-    const { name, createdAt, updatedAt, type, value } = this.props.deviceData;
+    const {
+      name,
+      createdAt,
+      updatedAt,
+      type,
+      value,
+      id
+    } = this.props.deviceData;
     return (
       <Card id="deviceCard">
         <CardBody>
@@ -27,7 +42,17 @@ class DeviceCard extends Component {
           <CardSubtitle>
             <small>{updatedAt}</small>
           </CardSubtitle>
-          <CardText />
+          <CardText>
+            <span>
+              <FontAwesomeIcon icon={faThermometerEmpty} />
+            </span>
+            <span>
+              <FontAwesomeIcon icon={faTint} />
+            </span>
+            <span>
+              <FontAwesomeIcon icon={faLeaf} />
+            </span>
+          </CardText>
         </CardBody>
       </Card>
     );
