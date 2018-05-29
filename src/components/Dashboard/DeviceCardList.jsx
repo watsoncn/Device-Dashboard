@@ -12,29 +12,31 @@ class DeviceCardList extends Component {
   // Begin Handlers
 
   render() {
-    const { devices } = this.props;
+    const { deviceList } = this.props;
+    console.log(deviceList);
     return (
       <div>
-        <h4 id="deviceList-header">Device List
+        <h4 id="deviceList-header">
+          Device List
           <button
             type="button"
             id="DeviceCard-add--button"
-            className="close"
+            className="close hideActiveOutline"
             aria-label="Add">
             <span aria-hidden="true">&#5161;</span>
           </button>
         </h4>
 
-      <div id="deviceCardList-scroll">
-        {devices.map(device => (
-          <DeviceCard
-            handleDeviceCardSelection={ this.props.handleDeviceCardSelection}
-            className="deviceCard"
-            key={device.id}
-            deviceData={device}
-          />
-        ))}
-      </div>
+        <div id="deviceCardList-scroll">
+          {deviceList.map(device => (
+            <DeviceCard
+              handleDeviceCardSelection={this.props.handleDeviceCardSelection}
+              className="deviceCard"
+              key={device.id}
+              deviceData={device}
+            />
+          ))}
+        </div>
       </div>
     );
   }

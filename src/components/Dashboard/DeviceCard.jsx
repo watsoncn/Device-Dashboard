@@ -35,7 +35,10 @@ class DeviceCard extends Component {
     return (
       <Card id="deviceCard">
         <CardBody>
-          <button type="button" className="close" aria-label="Delete">
+          <button
+            type="button"
+            className="close hideActiveOutline"
+            aria-label="Delete">
             <span aria-hidden="true">&times;</span>
           </button>
           <CardTitle>{name}</CardTitle>

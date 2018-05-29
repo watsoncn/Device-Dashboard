@@ -15,27 +15,27 @@ class ReadingsGraph extends Component {
     super(props);
     this.state = {
       toggleGraph: false
-    }
+    };
   }
 
   toggleGraphType = () => {
-    this.setState({toggleGraph: !this.state.toggleGraph})
-  }
+    this.setState({ toggleGraph: !this.state.toggleGraph });
+  };
 
   render() {
-    const { readings, selectedDeviceReadings } = this.props;
+    const { selectedDeviceReadings } = this.props;
     const fakeData = [
       {
-        "name": "Temperature",
-        "data": {
+        name: "Temperature",
+        data: {
           "2017-01-01 00:00:00 -0800": 20,
           "2017-01-01 00:01:00 -0800": 50,
           "2017-01-01 00:02:00 -0800": 20
         }
       },
       {
-        "name": "Humidity",
-        "data": {
+        name: "Humidity",
+        data: {
           "2017-01-01 00:00:00 -0800": 30,
           "2017-01-01 00:01:00 -0800": 60,
           "2017-01-01 00:02:00 -0800": 30,
@@ -49,8 +49,8 @@ class ReadingsGraph extends Component {
         }
       },
       {
-        "name": "Air Quality",
-        "data": {
+        name: "Air Quality",
+        data: {
           "2017-01-01 00:04:00 -0800": 12,
           "2017-01-01 00:05:00 -0800": 37,
           "2017-01-01 00:06:00 -0800": 67,
@@ -59,33 +59,46 @@ class ReadingsGraph extends Component {
           "2017-01-01 00:09:00 -0800": 100
         }
       }
-    ]
-    const avgData = [["Temperature", 74], ["Humidity", 66], ["Air Quality", 90]];
+    ];
+    const avgData = [
+      ["Temperature", 74],
+      ["Humidity", 66],
+      ["Air Quality", 90]
+    ];
     const graphType = {
       deviceAverages: (
         <div>
-          <h4 onClick={() => this.toggleGraphType()} id="chart-header">Average Device Readings</h4>
-        <ColumnChart
-        xtitle="Readings Type"
-        ytitle="Average Value"
-        colors={["rgb(151, 197, 179)"]}
-        data={avgData} />
-    </div>),
+          <h4 onClick={() => this.toggleGraphType()} id="chart-header">
+            Average Device Readings
+          </h4>
+          <ColumnChart
+            xtitle="Readings Type"
+            ytitle="Average Value"
+            colors={["rgb(151, 197, 179)"]}
+            data={avgData}
+          />
+        </div>
+      ),
       selectedDevice: (
         <div>
-          <h4 onClick={() => this.toggleGraphType()} id="chart-header">Selected Device Readings</h4>
-        <LineChart
-        xtitle="Time"
-        ytitle="Avg Readings"
-        colors={["rgb(151, 197, 179)", "black", "blue"]}
-        data={fakeData}
-      />
-  </div>)
-    }
+          <h4 onClick={() => this.toggleGraphType()} id="chart-header">
+            Selected Device Readings
+          </h4>
+          <LineChart
+            xtitle="Time"
+            ytitle="Avg Readings"
+            colors={["rgb(151, 197, 179)", "black", "blue"]}
+            data={fakeData}
+          />
+        </div>
+      )
+    };
     return (
       <div>
-        <h4></h4>
-        {this.state.toggleGraph ? graphType.selectedDevice : graphType.deviceAverages}
+        <h4 />
+        {this.state.toggleGraph
+          ? graphType.selectedDevice
+          : graphType.deviceAverages}
       </div>
     );
   }
