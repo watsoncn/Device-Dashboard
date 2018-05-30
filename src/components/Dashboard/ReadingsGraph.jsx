@@ -69,11 +69,11 @@ class ReadingsGraph extends Component {
       deviceAverages: (
         <div>
           <h4 onClick={() => this.toggleGraphType()} id="chart-header">
-            Average Device Readings
+            System Reading Range
           </h4>
           <ColumnChart
             xtitle="Readings Type"
-            ytitle="Average Value"
+            ytitle="Value Ranges"
             colors={["rgb(151, 197, 179)"]}
             data={avgData}
           />

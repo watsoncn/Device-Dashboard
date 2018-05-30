@@ -139,10 +139,12 @@ class Dashboard extends Component {
     readingRanges.maxAirQuality = airQualityList.length
       ? Math.max(...airQualityList)
       : "NA";
+
+    this.setState({ readingRanges });
   }
 
   render() {
-    const { selectedDeviceReadings, deviceList } = this.state;
+    const { selectedDeviceReadings, deviceList, readingRanges } = this.state;
 
     // If user clicks to create a new device/reading, load create view
     if (this.state.createForm) {
@@ -156,7 +158,7 @@ class Dashboard extends Component {
           <Row id="Dashboard-body">
             <Col sm="6" id="readingsGraph">
               <ReadingsGraph
-                deviceList={deviceList}
+                readingRanges={readingRanges}
                 selectedDeviceReadings={selectedDeviceReadings}
               />
             </Col>

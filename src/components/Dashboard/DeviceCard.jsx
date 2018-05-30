@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import _ from "lodash";
+import Moment from "react-moment";
+import "moment-timezone";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import {
   faThermometerEmpty,
@@ -32,6 +35,24 @@ class DeviceCard extends Component {
       value,
       id
     } = this.props.deviceData;
+    let readingIcon;
+    if (type === "temperature") {
+      readingIcon = <FontAwesomeIcon icon={faThermometerEmpty} />;
+    } else if (type === "humidity") {
+      readingIcon = <FontAwesomeIcon icon={faTint} />;
+    } else if (type === "airquality") {
+      readingIcon = <FontAwesomeIcon icon={faLeaf} />;
+    }
+
+    const dataQuality =
+      type && value ? (
+        <small>
+          {_.startCase(_.toLower(type))}: {readingIcon} {value}°f
+        </small>
+      ) : (
+        <small>No Readings</small>
+      );
+
     return (
       <Card id="deviceCard">
         <CardBody>
@@ -42,14 +63,11 @@ class DeviceCard extends Component {
             <span aria-hidden="true">&times;</span>
           </button>
           <CardTitle>{name}</CardTitle>
-          <CardSubtitle>
-            <small>{updatedAt}</small>
-          </CardSubtitle>
-          <CardText>
-            {type}: {value}
-            <span>{/* <FontAwesomeIcon icon={faThermometerEmpty} /> */}</span>
-            <span>{/* <FontAwesomeIcon icon={faTint} />*/}</span>
-            <span>{/* <FontAwesomeIcon icon={faLeaf} />*/}</span>
+          <CardSubtitle>{dataQuality}</CardSubtitle>
+          <CardText className="deviceCard-body">
+            <small>
+              Last updated <Moment fromNow>{updatedAt}</Moment>
+            </small>
           </CardText>
         </CardBody>
       </Card>
