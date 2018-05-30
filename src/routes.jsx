@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import DeviceCardList from "./components/Dashboard/DeviceCardList";
 import DeviceCard from "./components/Dashboard/DeviceCard";
 import ReadingsGraph from "./components/Dashboard/ReadingsGraph";
+import CreateForm from "./components/Dashboard/CreateForm";
 
 const Routes = () => (
   <Router>
@@ -14,6 +15,7 @@ const Routes = () => (
       <Route path="/DeviceCardList" component={DeviceCardList} />
       <Route path="/DeviceCard" component={DeviceCard} />
       <Route path="/ReadingsGraph" component={ReadingsGraph} />
+      <Route path="/CreateForm" component={CreateForm} />
     </div>
   </Router>
 );

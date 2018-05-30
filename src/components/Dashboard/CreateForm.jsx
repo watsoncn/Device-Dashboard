@@ -3,7 +3,7 @@ import { Row, Col } from "reactstrap";
 import dataLayer from "./../../data";
 const connection = new dataLayer();
 
-class Dashboard extends Component {
+class CreateForm extends Component {
   constructor(props) {
     super(props);
 
@@ -40,4 +40,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default CreateForm;

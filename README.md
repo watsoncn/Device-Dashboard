@@ -1,5 +1,13 @@
 ### What were using
 
+### Data Proxy
+
+https://cors-anywhere.herokuapp.com/
+
+Append API url after proxy url in requests
+
+### Technologies
+
 * React 16
 * Webpack 3
 * React Router 4
@@ -8,6 +16,8 @@
 * Hot Module Reloading
 * Jest 21
 * Enzyme 3 for testing
+* React ChartKick for graphs
+* ReactStrap for component-bootstrap
 
 ### Features
 
@@ -23,7 +33,7 @@
 * Fork and clone the project:
 
 ```
-git clone https://github.com/ReactJSResources/react-webpack-babel.git
+git clone https://github.com/watsoncn/Device-Dashboard.git
 ```
 
 * Then install the dependencies:
@@ -115,3 +125,5 @@ npm run lint
 
 * styles having /src/ in their absolute path considered part of the application and exported as local css modules.
 * other styles considered global styles used by components and included in the css bundle directly.
+
+Credit to https://github.com/ReactJSResources/react-webpack-babel.git for bundle setup.

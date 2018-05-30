@@ -46,15 +46,10 @@ class DeviceCard extends Component {
             <small>{updatedAt}</small>
           </CardSubtitle>
           <CardText>
-            <span>
-              <FontAwesomeIcon icon={faThermometerEmpty} />
-            </span>
-            <span>
-              <FontAwesomeIcon icon={faTint} />
-            </span>
-            <span>
-              <FontAwesomeIcon icon={faLeaf} />
-            </span>
+            {type}: {value}
+            <span>{/* <FontAwesomeIcon icon={faThermometerEmpty} /> */}</span>
+            <span>{/* <FontAwesomeIcon icon={faTint} />*/}</span>
+            <span>{/* <FontAwesomeIcon icon={faLeaf} />*/}</span>
           </CardText>
         </CardBody>
       </Card>
