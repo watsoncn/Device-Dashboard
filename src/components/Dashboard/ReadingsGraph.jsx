@@ -22,8 +22,10 @@ class ReadingsGraph extends Component {
     this.setState({ toggleGraph: !this.state.toggleGraph });
   };
 
+  formatDeviceChartData = () => {};
+
   render() {
-    const { selectedDeviceReadings } = this.props;
+    const { selectedDeviceReadings, readingRanges } = this.props;
     const fakeData = [
       {
         name: "Temperature",
@@ -60,11 +62,7 @@ class ReadingsGraph extends Component {
         }
       }
     ];
-    const avgData = [
-      ["Temperature", 74],
-      ["Humidity", 66],
-      ["Air Quality", 90]
-    ];
+
     const graphType = {
       deviceAverages: (
         <div>
@@ -75,7 +73,7 @@ class ReadingsGraph extends Component {
             xtitle="Readings Type"
             ytitle="Value Ranges"
             colors={["rgb(151, 197, 179)"]}
-            data={avgData}
+            data={readingRanges}
           />
         </div>
       ),

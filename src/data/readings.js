@@ -5,9 +5,4 @@ module.exports = function(axios) {
   this.getAllReadings = () => {
     return axios.get("/readings");
   };
-
-  // Return specific reading matching readingId
-  this.getSingleDeviceReadings = readingId => {
-    return axios.get(`/readings/${readingId}`);
-  };
 };

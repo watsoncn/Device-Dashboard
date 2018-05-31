@@ -10,10 +10,12 @@ class DeviceCardList extends Component {
   }
 
   // Begin Handlers
+  handleGetSingleDeviceReadings = deviceId => {
+    this.props.handleGetSingleDeviceReadings(deviceId);
+  };
 
   render() {
     const { deviceList } = this.props;
-    console.log(deviceList);
     return (
       <div>
         <h4 id="deviceList-header">
@@ -30,7 +32,7 @@ class DeviceCardList extends Component {
         <div id="deviceCardList-scroll">
           {deviceList.map(device => (
             <DeviceCard
-              handleDeviceCardSelection={this.props.handleDeviceCardSelection}
+              handleGetSingleDeviceReadings={this.handleGetSingleDeviceReadings}
               className="deviceCard"
               key={device.id}
               deviceData={device}

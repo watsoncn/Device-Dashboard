@@ -9,49 +9,18 @@ const connection = new dataLayer();
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    this.readingsGraph = React.createRef();
     this.state = {
       deviceList: [],
-      selectedDeviceReadings: [],
       createForm: false
     };
   }
 
+  // Lifecycle Methods
   componentDidMount() {
     this.handleGetDeviceList();
   }
 
-  // Begin Handlers
-  handleGetDeviceList = () => {
-    connection.devices
-      .getDeviceList()
-      .then(resp => {
-        this.setState({ deviceList: resp.data }, () => {
-          this.calculateDeviceReadingRanges();
-        });
-      })
-      .catch(error =>
-        this.setState({
-          failedRequest: "Unable to retrieve devices. Try again soon."
-        })
-      );
-  };
-  handleGetSingleDeviceReadings = device => {
-    connection.devices
-      .getSingleDeviceReadings(device.id)
-      .then(resp => {
-        return resp.data;
-      })
-      .catch(error =>
-        this.setState({
-          failedRequest: "Unable to retrieve device readings. Try again soon."
-        })
-      );
-  };
-  handleDashboadUpdate() {
-    this.handleGetDeviceList();
-    this.handleGetAllDeviceReadings();
-  }
+  // Handler Methods
   handleDeleteDevice = () => {
     connection.devices
       .deleteDevice()
@@ -67,14 +36,28 @@ class Dashboard extends Component {
         })
       );
   };
-  handleCreateDevice = () => {
-    // TRIGGER MODAL OPEN
-  };
-  handleDeviceCardSelection = selectedDeviceCard => {
+  handleGetDeviceList = () => {
     connection.devices
-      .getDeviceReadings()
+      .getDeviceList()
       .then(resp => {
-        this.setState({ selectedDeviceReadings: resp.data });
+        this.setState({ deviceList: resp.data }, () => {
+          this.calculateDeviceReadingRanges();
+        });
+      })
+      .catch(error =>
+        this.setState({
+          failedRequest: "Unable to retrieve devices. Try again soon."
+        })
+      );
+  };
+  handleGetSingleDeviceReadings = deviceId => {
+    connection.devices
+      .getSingleDeviceReadings(deviceId)
+      .then(resp => {
+        const sortedReadings = resp.data
+          .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+          .slice(0, 10);
+        this.setState({ sortedReadings });
       })
       .catch(error =>
         this.setState({
@@ -83,17 +66,17 @@ class Dashboard extends Component {
       );
   };
 
-  // MATH METHODS
+  // Math Methods
   getListAverage(list) {
     return list.reduce((a, b) => a + b, 0) / list.length;
   }
-
   calculateDeviceReadingRanges() {
     const { deviceList } = this.state;
-    let temperatureList = [];
-    let humidityList = [];
-    let airQualityList = [];
-    let readingRanges = {};
+    // Temp Arrays for finding ranges
+    const temperatureList = [];
+    const humidityList = [];
+    const airQualityList = [];
+    const readingRanges = [];
 
     deviceList.forEach(device => {
       if (!isNaN(device.value)) {
@@ -108,72 +91,74 @@ class Dashboard extends Component {
     });
 
     // Average Readings
-    readingRanges.avgTemperature = temperatureList.length
-      ? this.getListAverage(temperatureList)
-      : "NA";
-    readingRanges.avgHumidity = humidityList.length
-      ? this.getListAverage(humidityList)
-      : "NA";
-    readingRanges.avgAirQuality = airQualityList.length
-      ? this.getListAverage(airQualityList)
-      : "NA";
+    temperatureList.length
+      ? readingRanges.push([
+          "Avg-Temp",
+          this.getListAverage(temperatureList).toFixed(2)
+        ])
+      : readingRanges.push(["Avg-Temp", 0]);
+    humidityList.length
+      ? readingRanges.push([
+          "Avg-Humid",
+          this.getListAverage(humidityList).toFixed(2)
+        ])
+      : readingRanges.push(["Avg-Humid", 0]);
+    airQualityList.length
+      ? readingRanges.push([
+          "Avg-Air",
+          this.getListAverage(airQualityList).toFixed(2)
+        ])
+      : readingRanges.push(["Avg-Air", 0]);
 
     // Minimum Readings
-    readingRanges.minTemperature = temperatureList.length
-      ? Math.min(...temperatureList)
-      : "NA";
-    readingRanges.minHumidity = humidityList.length
-      ? Math.min(...humidityList)
-      : "NA";
-    readingRanges.minAirQuality = airQualityList.length
-      ? Math.min(...airQualityList)
-      : "NA";
+    temperatureList.length
+      ? readingRanges.push([
+          "Min-Temp",
+          Math.min(...temperatureList).toFixed(2)
+        ])
+      : readingRanges.push(["Min-Temp", 0]);
+
+    humidityList.length
+      ? readingRanges.push(["Min-Humid", Math.min(...humidityList).toFixed(2)])
+      : readingRanges.push(["Min-Humid", 0]);
+
+    airQualityList.length
+      ? readingRanges.push(["Min-Air", Math.min(...airQualityList).toFixed(2)])
+      : readingRanges.push(["Min-Air", 0]);
 
     // Maximum Readings
-    readingRanges.maxTemperature = temperatureList.length
-      ? Math.max(...temperatureList)
-      : "NA";
-    readingRanges.maxHumidity = humidityList.length
-      ? Math.max(...humidityList)
-      : "NA";
-    readingRanges.maxAirQuality = airQualityList.length
-      ? Math.max(...airQualityList)
-      : "NA";
+    temperatureList.length
+      ? readingRanges.push([
+          "Max-Temp",
+          Math.max(...temperatureList).toFixed(2)
+        ])
+      : readingRanges.push(["Max-Temp", 0]);
+
+    humidityList.length
+      ? readingRanges.push(["Max-Humid", Math.max(...humidityList).toFixed(2)])
+      : readingRanges.push(["Max-Humid", 0]);
+
+    airQualityList.length
+      ? readingRanges.push(["Max-Air", Math.max(...airQualityList).toFixed(2)])
+      : readingRanges.push(["Max-Air", 0]);
 
     this.setState({ readingRanges });
   }
 
   render() {
-    const { selectedDeviceReadings, deviceList, readingRanges } = this.state;
+    const { sortedReadings, deviceList, readingRanges } = this.state;
 
     // If user clicks to create a new device/reading, load create view
     if (this.state.createForm) {
       return (
         <Container>
           <Row>
-            <Col sm="12" id="dashboard-header">
-              <h1>Device Dashboard</h1>
-            </Col>
-          </Row>
-          <Row id="Dashboard-body">
-            <Col sm="6" id="readingsGraph">
-              <ReadingsGraph
-                readingRanges={readingRanges}
-                selectedDeviceReadings={selectedDeviceReadings}
-              />
-            </Col>
-            <Col sm="1" />
-            <Col sm="4">
-              <DeviceCardList
-                handleDeviceCardSelection={this.handleDeviceCardSelection}
-                deviceList={deviceList}
-              />
-            </Col>
+            <h1>CREATE FORM</h1>
           </Row>
         </Container>
       );
     }
-    // Load standard dashboard
+    // Load dashboard
     return (
       <Container>
         <Row>
@@ -183,12 +168,15 @@ class Dashboard extends Component {
         </Row>
         <Row id="Dashboard-body">
           <Col sm="6" id="readingsGraph">
-            <ReadingsGraph selectedDeviceReadings={selectedDeviceReadings} />
+            <ReadingsGraph
+              readingRanges={readingRanges}
+              selectedDeviceReadings={sortedReadings}
+            />
           </Col>
           <Col sm="1" />
           <Col sm="4">
             <DeviceCardList
-              handleDeviceCardSelection={this.handleDeviceCardSelection}
+              handleGetSingleDeviceReadings={this.handleGetSingleDeviceReadings}
               deviceList={deviceList}
             />
           </Col>

@@ -26,15 +26,12 @@ class DeviceCard extends Component {
     this.state = {};
   }
 
+  handleDeviceCardClick(deviceId) {
+    this.props.handleGetSingleDeviceReadings(deviceId);
+  }
+
   render() {
-    const {
-      name,
-      createdAt,
-      updatedAt,
-      type,
-      value,
-      id
-    } = this.props.deviceData;
+    const { name, updatedAt, type, value, id } = this.props.deviceData;
     let readingIcon;
     if (type === "temperature") {
       readingIcon = <FontAwesomeIcon icon={faThermometerEmpty} />;
@@ -54,7 +51,7 @@ class DeviceCard extends Component {
       );
 
     return (
-      <Card id="deviceCard">
+      <Card onClick={() => this.handleDeviceCardClick(id)} id="deviceCard">
         <CardBody>
           <button
             type="button"
