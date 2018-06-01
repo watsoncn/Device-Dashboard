@@ -68,8 +68,33 @@ class Dashboard extends Component {
 
   formatDeviceReadingsChart = readings => {
     // BUILD CHART DATA
-    const chartArray = {};
-    console.log(readings);
+    const chartData = [];
+    const tempData = {
+      name: "Temperature",
+      data: {}
+    };
+    const humidData = {
+      name: "Humidity",
+      data: {}
+    };
+    const airData = {
+      name: "Air Quality",
+      data: {}
+    };
+    readings.forEach(reading => {
+      if (reading.type === "temperature") {
+        tempData.data[reading.updatedAt] = reading.value;
+        console.log(tempData);
+      } else if (reading.type === "humidity") {
+        humidData.data[reading.updatedAt] = reading.value;
+      } else if (reading.type === "airquality") {
+        airData.data[reading.updatedAt] = reading.value;
+      }
+    });
+    chartData.push(tempData);
+    chartData.push(humidData);
+    chartData.push(airData);
+    console.log("CHART:", chartData);
   };
 
   // {
