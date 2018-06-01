@@ -13,7 +13,6 @@ class Dashboard extends Component {
       deviceList: [],
       createForm: false
     };
-    this.sortedList = [];
   }
 
   // Lifecycle Methods
@@ -42,7 +41,6 @@ class Dashboard extends Component {
       .getDeviceList()
       .then(resp => {
         this.setState({ deviceList: resp.data }, () => {
-          console.log(resp.data);
           this.calculateDeviceReadingRanges();
         });
       })
@@ -52,13 +50,14 @@ class Dashboard extends Component {
         })
       );
   };
-  handleGetSingleDeviceReadings = deviceId => {
+  handleGetDeviceReadings = deviceId => {
     connection.devices
       .getSingleDeviceReadings(deviceId)
       .then(resp => {
-        this.sortedReadings = resp.data.sort(
-          (a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt)
-        );
+        const sortedReadings = resp.data
+          .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+          .slice(0, 10);
+        this.formatDeviceReadingsChart(sortedReadings);
       })
       .catch(error =>
         this.setState({
@@ -67,10 +66,32 @@ class Dashboard extends Component {
       );
   };
 
-  handleSubmitDevice = device => {
-    if (device === "cancel") {
+  formatDeviceReadingsChart = readings => {
+    // BUILD CHART DATA
+    const chartArray = {};
+    console.log(readings);
+  };
+
+  // {
+  //   name: "Temperature",
+  //   data: {
+  //     "2017-01-01 00:00:00 -0800": 20,
+  //     "2017-01-01 00:01:00 -0800": 50,
+  //     "2017-01-01 00:02:00 -0800": 20
+  //   }
+  // }
+
+  handleSubmitDeviceOrReading = (deviceOrReading, createDevice) => {
+    if (deviceOrReading === "cancel") {
       this.setState({ createForm: false });
+    } else {
+      createDevice
+        ? this.createDevice(deviceOrReading)
+        : this.createReading(deviceOrReading);
     }
+  };
+
+  createDevice(device) {
     connection.devices
       .createDevice(device)
       .then(resp => {
@@ -78,13 +99,25 @@ class Dashboard extends Component {
       })
       .catch(error =>
         this.setState({
-          failedRequest: "Unable to retrieve device readings. Try again soon."
+          failedRequest: "Unable to create device. Try again soon."
         })
       );
-  };
+  }
+  createReading(reading) {
+    connection.readings
+      .createReading(reading)
+      .then(resp => {
+        this.setState({ createForm: false }, () => this.handleGetDeviceList());
+      })
+      .catch(error =>
+        this.setState({
+          failedRequest: "Unable to create reading. Try again soon."
+        })
+      );
+  }
 
-  handleShowCreateForm = () => {
-    this.setState({ createForm: true });
+  handleShowHideCreateForm = showForm => {
+    this.setState({ createForm: showForm });
   };
 
   // Math Methods
@@ -164,9 +197,6 @@ class Dashboard extends Component {
 
     this.setState({ readingRanges });
   }
-  formatSortedReadings(readings) {
-    console.log("WAITED?");
-  }
   // {
   // createdAt:"2016-11-10T17:46:36.905Z"
   // deviceId:"SkooZDXo"
@@ -186,11 +216,17 @@ class Dashboard extends Component {
   // }
 
   render() {
-    const { sortedReadings, deviceList, readingRanges } = this.state;
+    const { deviceList, readingRanges } = this.state;
 
     // If user clicks to create a new device/reading, load create view
     if (this.state.createForm) {
-      return <CreateForm handleSubmitDevice={this.handleSubmitDevice} />;
+      return (
+        <CreateForm
+          deviceList={deviceList}
+          handleSubmitDevice={this.handleSubmitDeviceOrReading}
+          cancelForm={this.handleShowHideCreateForm}
+        />
+      );
     }
     // Load dashboard
     return (
@@ -202,17 +238,14 @@ class Dashboard extends Component {
         </Row>
         <Row id="Dashboard-body">
           <Col sm="6" id="readingsGraph">
-            <ReadingsGraph
-              readingRanges={readingRanges}
-              selectedDeviceReadings={sortedReadings}
-            />
+            <ReadingsGraph readingRanges={readingRanges} />
           </Col>
           <Col sm="1" />
           <Col sm="4">
             <DeviceCardList
-              handleShowCreateForm={this.handleShowCreateForm}
+              handleShowCreateForm={this.handleShowHideCreateForm}
               handleDeviceDelete={this.handleDeleteDevice}
-              handleGetSingleDeviceReadings={this.handleGetSingleDeviceReadings}
+              handleGetDeviceReadings={this.handleGetDeviceReadings}
               deviceList={deviceList}
             />
           </Col>

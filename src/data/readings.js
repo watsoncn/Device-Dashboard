@@ -7,7 +7,7 @@ module.exports = function(axios) {
   };
 
   // Create new reading data
-  this.createNewReading = reading => {
+  this.createReading = reading => {
     return axios.post("/readings", reading);
   };
 };

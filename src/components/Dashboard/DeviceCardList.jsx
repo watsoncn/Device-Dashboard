@@ -10,7 +10,11 @@ class DeviceCardList extends Component {
   }
 
   handleShowCreateForm = () => {
-    this.props.handleShowCreateForm();
+    this.props.handleShowCreateForm(true);
+  };
+
+  passIdToParent = deviceId => {
+    this.props.handleGetDeviceReadings(deviceId);
   };
 
   handleDeleteDevice = deviceId => {
@@ -36,7 +40,9 @@ class DeviceCardList extends Component {
         <div id="deviceCardList-scroll">
           {deviceList.map(device => (
             <DeviceCard
+              testValue
               handleDeleteDevice={this.handleDeleteDevice}
+              passIdToParent={this.passIdToParent}
               className="deviceCard"
               key={device.id}
               deviceData={device}

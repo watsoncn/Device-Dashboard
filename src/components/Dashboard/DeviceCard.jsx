@@ -26,9 +26,9 @@ class DeviceCard extends Component {
     this.state = {};
   }
 
-  handleDeviceCardClick(deviceId) {
-    // send device ID to dashboard=>Chart to display correct readings
-  }
+  handleDeviceCardClick = deviceId => {
+    this.props.passIdToParent(deviceId);
+  };
   handleDeviceDeleteClick(deviceId) {
     this.props.handleDeleteDevice(deviceId);
   }

@@ -9,7 +9,6 @@ import {
   Label,
   Input
 } from "reactstrap";
-import shortid from "shortid";
 import dataLayer from "./../../data";
 const connection = new dataLayer();
 
@@ -19,17 +18,20 @@ class CreateForm extends Component {
 
     this.state = {
       createDevice: true,
-      mouseEnterDevice: true,
       deviceName: "",
       readingType: "",
-      readingValue: null,
-      deviceId: ""
+      readingValue: 0,
+      readingDeviceId: ""
     };
   }
 
   // Begin Handlers
-  handleCancelOrSubmit = submit => {
-    submit ? this.buildAndSubmit() : this.props.cancelForm(submit);
+  handleCancelOrSubmit = (submit, deviceNotReading) => {
+    submit
+      ? this.setState({ createDevice: deviceNotReading }, () =>
+          this.buildAndSubmit()
+        )
+      : this.props.cancelForm(submit);
   };
 
   buildAndSubmit = () => {
@@ -37,21 +39,15 @@ class CreateForm extends Component {
       const device = {
         name: this.state.deviceName
       };
-      this.props.handleSubmitDevice(device);
+      this.props.handleSubmitDevice(device, true);
     } else {
-      let deviceId = shortid.generate();
       const reading = {
         type: this.state.readingType,
-        value: this.state.readingValue,
-        deviceId: deviceId.substr(deviceId.length, -9)
+        value: +this.state.readingValue,
+        deviceId: this.state.readingDeviceId
       };
-      console.log(reading);
-      this.props.handleSubmitDevice(reading);
+      this.props.handleSubmitDevice(reading, false);
     }
-  };
-
-  mouseEnterDevice = enterDevice => {
-    this.setState({ mouseEnterDevice: enterDevice });
   };
 
   autoFillName(e, deviceName) {
@@ -60,7 +56,13 @@ class CreateForm extends Component {
   }
 
   render() {
-    const { deviceName } = this.state;
+    const {
+      deviceName,
+      readingType,
+      readingValue,
+      readingDeviceId
+    } = this.state;
+    const { deviceList } = this.props;
     return (
       <Container>
         <Row>
@@ -70,13 +72,12 @@ class CreateForm extends Component {
         </Row>
         <Row id="CreateForm-body">
           <Col sm="2" />
-          <Col
-            className="formType"
-            onMouseEnter={() => this.mouseEnterDevice(true)}
-            sm="3">
-            <Form>
+          <Col className="formType" sm="3">
+            <Form className="formType">
+              <h4>Create Device</h4>
+              <hr />
               <FormGroup>
-                <Label for="deviceName">Device Name</Label>
+                <Label for="deviceName">* Device Name</Label>
                 <Input
                   value={deviceName}
                   onChange={e => this.setState({ deviceName: e.target.value })}
@@ -106,7 +107,7 @@ class CreateForm extends Component {
                 </small>
               </FormGroup>
               <Button
-                onClick={() => this.handleCancelOrSubmit(true)}
+                onClick={() => this.handleCancelOrSubmit(true, true)}
                 className="submitButton">
                 Submit
               </Button>
@@ -118,22 +119,57 @@ class CreateForm extends Component {
             </Form>
           </Col>
           <Col sm="2" />
-          <Col
-            className="formType"
-            onMouseEnter={() => this.mouseEnterDevice(false)}
-            sm="3">
-            <Form>
+          <Col className="formType" sm="3">
+            <Form className="formType">
+              <h4>Create Reading</h4>
+              <hr />
               <FormGroup>
-                <Label for="exampleEmail">Email</Label>
+                <Label for="readingDevice">* Device</Label>
                 <Input
-                  type="email"
-                  name="email"
-                  id="exampleEmail"
-                  placeholder="with a placeholder"
+                  onChange={e =>
+                    this.setState({ readingDeviceId: e.target.value })
+                  }
+                  type="select"
+                  id="readingDevice">
+                  <option>Select Device</option>
+                  {deviceList.map(device => (
+                    <option key={device.id} value={device.id}>
+                      {device.name}
+                    </option>
+                  ))}
+                </Input>
+              </FormGroup>
+              <FormGroup>
+                <Label for="readingType">* Reading Type</Label>
+                <Input
+                  defaultValue={readingType}
+                  onChange={e => this.setState({ readingType: e.target.value })}
+                  type="select"
+                  id="readingType">
+                  <option>Select Type</option>
+                  <option value="temperature">Temperature</option>
+                  <option value="humidity">Humidity</option>
+                  <option value="airquality">Air Quality</option>
+                </Input>
+              </FormGroup>
+              <FormGroup>
+                <Label for="readingValue">* Reading Value</Label>
+                <Input
+                  value={readingValue}
+                  onChange={e =>
+                    this.setState({ readingValue: e.target.value })
+                  }
+                  placeholder={
+                    readingType === "temperature"
+                      ? "Degrees in F"
+                      : "Measurement percent"
+                  }
+                  id="readingValue"
+                  type="number"
                 />
               </FormGroup>
               <Button
-                onClick={() => this.handleCancelOrSubmit(true)}
+                onClick={() => this.handleCancelOrSubmit(true, false)}
                 className="submitButton">
                 Submit
               </Button>
