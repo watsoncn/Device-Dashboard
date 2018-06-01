@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import { Row, Col } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input
+} from "reactstrap";
 import dataLayer from "./../../data";
 const connection = new dataLayer();
 
@@ -29,13 +38,27 @@ class CreateForm extends Component {
 
   render() {
     return (
-      <Row>
-        <Col sm="2" />
-        <Col sm="8">
-          <h4>Create Device</h4>
-        </Col>
-        <Col sm="2" />
-      </Row>
+      <Container>
+        <Row>
+          <Col sm="12" id="dashboard-header">
+            <h1>Register a New Device or Reading</h1>
+          </Col>
+        </Row>
+        <Row id="Dashboard-body">
+          <Form>
+            <FormGroup>
+              <Label for="exampleEmail">Email</Label>
+              <Input
+                type="email"
+                name="email"
+                id="exampleEmail"
+                placeholder="with a placeholder"
+              />
+            </FormGroup>
+            <Button>Submit</Button>
+          </Form>
+        </Row>
+      </Container>
     );
   }
 }

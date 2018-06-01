@@ -13,6 +13,7 @@ class Dashboard extends Component {
       deviceList: [],
       createForm: false
     };
+    this.sortedList = [];
   }
 
   // Lifecycle Methods
@@ -21,9 +22,9 @@ class Dashboard extends Component {
   }
 
   // Handler Methods
-  handleDeleteDevice = () => {
+  handleDeleteDevice = deviceId => {
     connection.devices
-      .deleteDevice()
+      .deleteDevice(deviceId)
       .then(resp => {
         // Likely case for websocket, for now re-GET list
         // in case of unexpected external changes
@@ -41,6 +42,7 @@ class Dashboard extends Component {
       .getDeviceList()
       .then(resp => {
         this.setState({ deviceList: resp.data }, () => {
+          console.log(resp.data);
           this.calculateDeviceReadingRanges();
         });
       })
@@ -54,10 +56,9 @@ class Dashboard extends Component {
     connection.devices
       .getSingleDeviceReadings(deviceId)
       .then(resp => {
-        const sortedReadings = resp.data
-          .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
-          .slice(0, 10);
-        this.setState({ sortedReadings });
+        this.sortedReadings = resp.data.sort(
+          (a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt)
+        );
       })
       .catch(error =>
         this.setState({
@@ -66,10 +67,32 @@ class Dashboard extends Component {
       );
   };
 
+  handleSubmitDevice = device => {
+    if (device === "cancel") {
+      this.setState({ createForm: false });
+    }
+    connection.devices
+      .createDevice(device)
+      .then(resp => {
+        this.setState({ createForm: false }, () => this.handleGetDeviceList());
+      })
+      .catch(error =>
+        this.setState({
+          failedRequest: "Unable to retrieve device readings. Try again soon."
+        })
+      );
+  };
+
+  handleShowCreateForm = () => {
+    this.setState({ createForm: true });
+  };
+
   // Math Methods
   getListAverage(list) {
     return list.reduce((a, b) => a + b, 0) / list.length;
   }
+
+  // Builder Methods
   calculateDeviceReadingRanges() {
     const { deviceList } = this.state;
     // Temp Arrays for finding ranges
@@ -79,84 +102,95 @@ class Dashboard extends Component {
     const readingRanges = [];
 
     deviceList.forEach(device => {
-      if (!isNaN(device.value)) {
+      if (!isNaN(+device.value)) {
         if (device.type === "temperature") {
-          temperatureList.push(device.value);
+          temperatureList.push(+device.value);
         } else if (device.type === "humidity") {
-          humidityList.push(device.value);
+          humidityList.push(+device.value);
         } else if (device.type === "airquality") {
-          airQualityList.push(device.value);
+          airQualityList.push(+device.value);
         }
       }
     });
 
-    // Average Readings
+    // Temperature Readings
     temperatureList.length
       ? readingRanges.push([
-          "Avg-Temp",
-          this.getListAverage(temperatureList).toFixed(2)
-        ])
-      : readingRanges.push(["Avg-Temp", 0]);
-    humidityList.length
-      ? readingRanges.push([
-          "Avg-Humid",
-          this.getListAverage(humidityList).toFixed(2)
-        ])
-      : readingRanges.push(["Avg-Humid", 0]);
-    airQualityList.length
-      ? readingRanges.push([
-          "Avg-Air",
-          this.getListAverage(airQualityList).toFixed(2)
-        ])
-      : readingRanges.push(["Avg-Air", 0]);
-
-    // Minimum Readings
-    temperatureList.length
-      ? readingRanges.push([
-          "Min-Temp",
+          "Temp-Min",
           Math.min(...temperatureList).toFixed(2)
         ])
-      : readingRanges.push(["Min-Temp", 0]);
-
-    humidityList.length
-      ? readingRanges.push(["Min-Humid", Math.min(...humidityList).toFixed(2)])
-      : readingRanges.push(["Min-Humid", 0]);
-
-    airQualityList.length
-      ? readingRanges.push(["Min-Air", Math.min(...airQualityList).toFixed(2)])
-      : readingRanges.push(["Min-Air", 0]);
-
-    // Maximum Readings
+      : readingRanges.push(["Temp-Min", 0]);
     temperatureList.length
       ? readingRanges.push([
-          "Max-Temp",
+          "Temp-Avg",
+          this.getListAverage(temperatureList).toFixed(2)
+        ])
+      : readingRanges.push(["Temp-Avg", 0]);
+    temperatureList.length
+      ? readingRanges.push([
+          "Temp-Max",
           Math.max(...temperatureList).toFixed(2)
         ])
-      : readingRanges.push(["Max-Temp", 0]);
+      : readingRanges.push(["Temp-Max", 0]);
+
+    // Humidity Readings
+    humidityList.length
+      ? readingRanges.push(["Humid-Min", Math.min(...humidityList).toFixed(2)])
+      : readingRanges.push(["Humid-Min", 0]);
+    humidityList.length
+      ? readingRanges.push([
+          "Humid-Avg",
+          this.getListAverage(humidityList).toFixed(2)
+        ])
+      : readingRanges.push(["Humid-Avg", 0]);
 
     humidityList.length
-      ? readingRanges.push(["Max-Humid", Math.max(...humidityList).toFixed(2)])
-      : readingRanges.push(["Max-Humid", 0]);
+      ? readingRanges.push(["Humid-Max", Math.max(...humidityList).toFixed(2)])
+      : readingRanges.push(["Humid-Max", 0]);
 
+    // Air Quality Readings
     airQualityList.length
-      ? readingRanges.push(["Max-Air", Math.max(...airQualityList).toFixed(2)])
-      : readingRanges.push(["Max-Air", 0]);
+      ? readingRanges.push(["Air-Min", Math.min(...airQualityList).toFixed(2)])
+      : readingRanges.push(["Air-Min", 0]);
+    airQualityList.length
+      ? readingRanges.push([
+          "Air-Avg",
+          this.getListAverage(airQualityList).toFixed(2)
+        ])
+      : readingRanges.push(["Air-Avg", 0]);
+    airQualityList.length
+      ? readingRanges.push(["Air-Max", Math.max(...airQualityList).toFixed(2)])
+      : readingRanges.push(["Air-Max", 0]);
 
     this.setState({ readingRanges });
   }
+  formatSortedReadings(readings) {
+    console.log("WAITED?");
+  }
+  // {
+  // createdAt:"2016-11-10T17:46:36.905Z"
+  // deviceId:"SkooZDXo"
+  // id:"SkCRFA6KG-x"
+  // type:"temperature"
+  // updatedAt:"2016-11-11T00:16:17.037Z"
+  // value: 81
+  // }
+
+  // {
+  //   name: "Temperature",
+  //   data: {
+  //     "2017-01-01 00:00:00 -0800": 20,
+  //     "2017-01-01 00:01:00 -0800": 50,
+  //     "2017-01-01 00:02:00 -0800": 20
+  //   }
+  // }
 
   render() {
     const { sortedReadings, deviceList, readingRanges } = this.state;
 
     // If user clicks to create a new device/reading, load create view
     if (this.state.createForm) {
-      return (
-        <Container>
-          <Row>
-            <h1>CREATE FORM</h1>
-          </Row>
-        </Container>
-      );
+      return <CreateForm handleSubmitDevice={this.handleSubmitDevice} />;
     }
     // Load dashboard
     return (
@@ -176,6 +210,8 @@ class Dashboard extends Component {
           <Col sm="1" />
           <Col sm="4">
             <DeviceCardList
+              handleShowCreateForm={this.handleShowCreateForm}
+              handleDeviceDelete={this.handleDeleteDevice}
               handleGetSingleDeviceReadings={this.handleGetSingleDeviceReadings}
               deviceList={deviceList}
             />

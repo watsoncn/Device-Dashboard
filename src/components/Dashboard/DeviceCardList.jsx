@@ -9,9 +9,12 @@ class DeviceCardList extends Component {
     super(props);
   }
 
-  // Begin Handlers
-  handleGetSingleDeviceReadings = deviceId => {
-    this.props.handleGetSingleDeviceReadings(deviceId);
+  handleShowCreateForm = () => {
+    this.props.handleShowCreateForm();
+  };
+
+  handleDeleteDevice = deviceId => {
+    this.props.handleDeviceDelete(deviceId);
   };
 
   render() {
@@ -21,6 +24,7 @@ class DeviceCardList extends Component {
         <h4 id="deviceList-header">
           Device List
           <button
+            onClick={this.handleShowCreateForm}
             type="button"
             id="DeviceCard-add--button"
             className="close hideActiveOutline"
@@ -32,7 +36,7 @@ class DeviceCardList extends Component {
         <div id="deviceCardList-scroll">
           {deviceList.map(device => (
             <DeviceCard
-              handleGetSingleDeviceReadings={this.handleGetSingleDeviceReadings}
+              handleDeleteDevice={this.handleDeleteDevice}
               className="deviceCard"
               key={device.id}
               deviceData={device}

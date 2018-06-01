@@ -22,46 +22,8 @@ class ReadingsGraph extends Component {
     this.setState({ toggleGraph: !this.state.toggleGraph });
   };
 
-  formatDeviceChartData = () => {};
-
   render() {
-    const { selectedDeviceReadings, readingRanges } = this.props;
-    const fakeData = [
-      {
-        name: "Temperature",
-        data: {
-          "2017-01-01 00:00:00 -0800": 20,
-          "2017-01-01 00:01:00 -0800": 50,
-          "2017-01-01 00:02:00 -0800": 20
-        }
-      },
-      {
-        name: "Humidity",
-        data: {
-          "2017-01-01 00:05:00 -0800": 30,
-          "2017-01-01 00:06:00 -0800": 70,
-          "2017-01-01 00:07:00 -0800": 70,
-          "2017-01-01 00:08:00 -0800": 50,
-          "2017-01-01 00:09:00 -0800": 112,
-          "2017-01-01 00:00:00 -0800": 30,
-          "2017-01-01 00:01:00 -0800": 60,
-          "2017-01-01 00:02:00 -0800": 30,
-          "2017-01-01 00:03:00 -0800": 80,
-          "2017-01-01 00:04:00 -0800": 100
-        }
-      },
-      {
-        name: "Air Quality",
-        data: {
-          "2017-01-01 00:04:00 -0800": 12,
-          "2017-01-01 00:05:00 -0800": 37,
-          "2017-01-01 00:06:00 -0800": 67,
-          "2017-01-01 00:07:00 -0800": 45,
-          "2017-01-01 00:08:00 -0800": 52,
-          "2017-01-01 00:09:00 -0800": 100
-        }
-      }
-    ];
+    const { readingRanges } = this.props;
 
     const graphType = {
       deviceAverages: (
@@ -86,7 +48,7 @@ class ReadingsGraph extends Component {
             xtitle="Time"
             ytitle="Avg Readings"
             colors={["rgb(151, 197, 179)", "black", "blue"]}
-            data={fakeData}
+            data={null}
           />
         </div>
       )

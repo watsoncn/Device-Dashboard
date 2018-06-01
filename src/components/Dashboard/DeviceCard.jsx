@@ -27,7 +27,10 @@ class DeviceCard extends Component {
   }
 
   handleDeviceCardClick(deviceId) {
-    this.props.handleGetSingleDeviceReadings(deviceId);
+    // send device ID to dashboard=>Chart to display correct readings
+  }
+  handleDeviceDeleteClick(deviceId) {
+    this.props.handleDeleteDevice(deviceId);
   }
 
   render() {
@@ -54,6 +57,7 @@ class DeviceCard extends Component {
       <Card onClick={() => this.handleDeviceCardClick(id)} id="deviceCard">
         <CardBody>
           <button
+            onClick={() => this.handleDeviceDeleteClick(id)}
             type="button"
             className="close hideActiveOutline"
             aria-label="Delete">
