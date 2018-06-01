@@ -106,6 +106,7 @@ class Dashboard extends Component {
       }
     });
     selectedDevice.push(tempData, humidData, airData);
+    console.log(selectedDevice);
     this.setState({ selectedDevice });
   };
 

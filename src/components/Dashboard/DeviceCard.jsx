@@ -46,9 +46,16 @@ class DeviceCard extends Component {
 
     const dataQuality =
       type && value ? (
-        <small>
-          {_.startCase(_.toLower(type))}: {readingIcon} {value}°f
-        </small>
+        type === "temperature" ? (
+          <small>
+            {_.startCase(_.toLower(type))}: {readingIcon} {value}°f
+          </small>
+        ) : (
+          <small>
+            {" "}
+            {_.startCase(_.toLower(type))}: {readingIcon} {value}%
+          </small>
+        )
       ) : (
         <small>No Readings</small>
       );

@@ -36,13 +36,14 @@ class ReadingsGraph extends Component {
             ytitle="Value Ranges"
             colors={["rgb(151, 197, 179)"]}
             data={readingRanges}
+            messages={{ empty: "Loading chart..." }}
           />
         </div>
       ),
       selectedDevice: (
         <div>
           <h4 id="chart-header">
-            Selected Device Readings
+            Device Readings
             <button
               onClick={this.handleGraphClose}
               id="closeGraphButton"
@@ -55,8 +56,10 @@ class ReadingsGraph extends Component {
           <LineChart
             xtitle="Time"
             ytitle="Avg Readings"
-            colors={["rgb(151, 197, 179)", "black", "blue"]}
+            colors={["#0043B1", "#707597", "#97C5B3"]}
             data={selectedDevice}
+            messages={{ empty: "Loading chart..." }}
+            library={{ spanGaps: true }}
           />
         </div>
       )
