@@ -11,6 +11,7 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       deviceList: [],
+      selectedDevice: [],
       createForm: false
     };
   }
@@ -54,10 +55,24 @@ class Dashboard extends Component {
     connection.devices
       .getSingleDeviceReadings(deviceId)
       .then(resp => {
-        const sortedReadings = resp.data
+        const tempReadings = resp.data
+          .filter(reading => reading.type === "temperature")
           .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
-          .slice(0, 10);
-        this.formatDeviceReadingsChart(sortedReadings);
+          .slice(0, 5);
+        const humidReadings = resp.data
+          .filter(reading => reading.type === "humidity")
+          .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+          .slice(0, 5);
+        const airReadings = resp.data
+          .filter(reading => reading.type === "airquality")
+          .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+          .slice(0, 5);
+
+        this.formatDeviceReadingsChart([
+          ...tempReadings,
+          ...humidReadings,
+          ...airReadings
+        ]);
       })
       .catch(error =>
         this.setState({
@@ -68,7 +83,7 @@ class Dashboard extends Component {
 
   formatDeviceReadingsChart = readings => {
     // BUILD CHART DATA
-    const chartData = [];
+    const selectedDevice = [];
     const tempData = {
       name: "Temperature",
       data: {}
@@ -84,44 +99,42 @@ class Dashboard extends Component {
     readings.forEach(reading => {
       if (reading.type === "temperature") {
         tempData.data[reading.updatedAt] = reading.value;
-        console.log(tempData);
       } else if (reading.type === "humidity") {
         humidData.data[reading.updatedAt] = reading.value;
       } else if (reading.type === "airquality") {
         airData.data[reading.updatedAt] = reading.value;
       }
     });
-    chartData.push(tempData);
-    chartData.push(humidData);
-    chartData.push(airData);
-    console.log("CHART:", chartData);
+    selectedDevice.push(tempData, humidData, airData);
+    this.setState({ selectedDevice });
   };
 
-  // {
-  //   name: "Temperature",
-  //   data: {
-  //     "2017-01-01 00:00:00 -0800": 20,
-  //     "2017-01-01 00:01:00 -0800": 50,
-  //     "2017-01-01 00:02:00 -0800": 20
-  //   }
-  // }
+  closeSelectedGraph = () => {
+    this.setState({ selectedDevice: [] });
+  };
 
   handleSubmitDeviceOrReading = (deviceOrReading, createDevice) => {
     if (deviceOrReading === "cancel") {
       this.setState({ createForm: false });
     } else {
-      createDevice
-        ? this.createDevice(deviceOrReading)
-        : this.createReading(deviceOrReading);
+      this.setState(
+        { createForm: false },
+        () =>
+          createDevice
+            ? this.createDevice(deviceOrReading)
+            : this.createReading(deviceOrReading)
+      );
     }
+  };
+
+  handleShowHideCreateForm = showForm => {
+    this.setState({ createForm: showForm });
   };
 
   createDevice(device) {
     connection.devices
       .createDevice(device)
-      .then(resp => {
-        this.setState({ createForm: false }, () => this.handleGetDeviceList());
-      })
+      .then(resp => this.handleGetDeviceList())
       .catch(error =>
         this.setState({
           failedRequest: "Unable to create device. Try again soon."
@@ -131,19 +144,13 @@ class Dashboard extends Component {
   createReading(reading) {
     connection.readings
       .createReading(reading)
-      .then(resp => {
-        this.setState({ createForm: false }, () => this.handleGetDeviceList());
-      })
+      .then(resp => this.handleGetDeviceList())
       .catch(error =>
         this.setState({
           failedRequest: "Unable to create reading. Try again soon."
         })
       );
   }
-
-  handleShowHideCreateForm = showForm => {
-    this.setState({ createForm: showForm });
-  };
 
   // Math Methods
   getListAverage(list) {
@@ -222,26 +229,9 @@ class Dashboard extends Component {
 
     this.setState({ readingRanges });
   }
-  // {
-  // createdAt:"2016-11-10T17:46:36.905Z"
-  // deviceId:"SkooZDXo"
-  // id:"SkCRFA6KG-x"
-  // type:"temperature"
-  // updatedAt:"2016-11-11T00:16:17.037Z"
-  // value: 81
-  // }
-
-  // {
-  //   name: "Temperature",
-  //   data: {
-  //     "2017-01-01 00:00:00 -0800": 20,
-  //     "2017-01-01 00:01:00 -0800": 50,
-  //     "2017-01-01 00:02:00 -0800": 20
-  //   }
-  // }
 
   render() {
-    const { deviceList, readingRanges } = this.state;
+    const { deviceList, readingRanges, selectedDevice } = this.state;
 
     // If user clicks to create a new device/reading, load create view
     if (this.state.createForm) {
@@ -263,7 +253,11 @@ class Dashboard extends Component {
         </Row>
         <Row id="Dashboard-body">
           <Col sm="6" id="readingsGraph">
-            <ReadingsGraph readingRanges={readingRanges} />
+            <ReadingsGraph
+              closeSelectedGraph={this.closeSelectedGraph}
+              selectedDevice={selectedDevice}
+              readingRanges={readingRanges}
+            />
           </Col>
           <Col sm="1" />
           <Col sm="4">

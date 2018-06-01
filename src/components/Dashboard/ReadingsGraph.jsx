@@ -13,24 +13,24 @@ ReactChartkick.addAdapter(Chart);
 class ReadingsGraph extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      toggleGraph: false
+      showAvgChart: true
     };
   }
 
-  toggleGraphType = () => {
-    this.setState({ toggleGraph: !this.state.toggleGraph });
+  handleGraphClose = () => {
+    this.props.closeSelectedGraph();
   };
 
   render() {
-    const { readingRanges } = this.props;
+    const { showAvgChart } = this.state;
+    const { readingRanges, selectedDevice } = this.props;
 
     const graphType = {
       deviceAverages: (
         <div>
-          <h4 onClick={() => this.toggleGraphType()} id="chart-header">
-            System Reading Range
-          </h4>
+          <h4 id="chart-header">System Reading Range</h4>
           <ColumnChart
             xtitle="Readings Type"
             ytitle="Value Ranges"
@@ -41,14 +41,22 @@ class ReadingsGraph extends Component {
       ),
       selectedDevice: (
         <div>
-          <h4 onClick={() => this.toggleGraphType()} id="chart-header">
+          <h4 id="chart-header">
             Selected Device Readings
+            <button
+              onClick={this.handleGraphClose}
+              id="closeGraphButton"
+              type="button"
+              className="close hideActiveOutline"
+              aria-label="Delete">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </h4>
           <LineChart
             xtitle="Time"
             ytitle="Avg Readings"
             colors={["rgb(151, 197, 179)", "black", "blue"]}
-            data={null}
+            data={selectedDevice}
           />
         </div>
       )
@@ -56,7 +64,7 @@ class ReadingsGraph extends Component {
     return (
       <div>
         <h4 />
-        {this.state.toggleGraph
+        {selectedDevice.length > 0
           ? graphType.selectedDevice
           : graphType.deviceAverages}
       </div>
